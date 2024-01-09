@@ -26,8 +26,6 @@ class LogStash::Filters::SparqlDecode < LogStash::Filters::Base
 
   public
   def filter(event)
-    puts "FILTERING IN SPARQLDECODE!"
-
     if event.get("[http][response][headers][content-type]") == "application/sparql-results+json"
       # A SPARQL query was sent, let's enrich it'
       if event.get("[http][request][headers][content-type]") == "application/sparql-query"
