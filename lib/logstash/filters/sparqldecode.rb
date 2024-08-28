@@ -2,6 +2,7 @@
 require "logstash/filters/base"
 require "logstash/namespace"
 require 'cgi'
+require 'uri'
 
 class LogStash::Filters::SparqlDecode < LogStash::Filters::Base
 
@@ -31,6 +32,9 @@ class LogStash::Filters::SparqlDecode < LogStash::Filters::Base
       if event.get("[http][request][headers][content-type]") == "application/sparql-query"
         # POST with content-type sparql-update, get body
         event.set("[http][request][sparql]", event.get("[http][request][body]"))
+      elsif event.get("[http][request][headers][content-type]") == "application/x-www-form-urlencoded"
+        form = URI.decode_www_form(event.get("[http][request][body]"))
+        event.set("[http][request][sparql]", form.assoc("query"))
       elsif event.get("[url][query]")
         query_map = CGI::parse(event.get("[url][query]"))
         query = query_map["query"] || query_map["update"]
