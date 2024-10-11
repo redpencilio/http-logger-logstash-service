@@ -1,5 +1,5 @@
 # Stage 0: build the gem
-FROM jruby:9 AS build-gem
+FROM jruby:9.2 AS build-gem
 
 WORKDIR /build
 
