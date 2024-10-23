@@ -1,7 +1,7 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
-require 'cgi'
+require "cgi"
 
 class LogStash::Filters::SparqlDecode < LogStash::Filters::Base
 
