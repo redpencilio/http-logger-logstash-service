@@ -7,19 +7,6 @@ class LogStash::Filters::SparqlDecode < LogStash::Filters::Base
 
   config_name "sparqldecode"
 
-# These values are hardcoded for now because of the need to switch source and dest ip fields based on direction
-#  # The fields where the IP and domain name of a service can be found. Used to fill the IP -> domain name map
-#  config :source_domain_field, :validate => :string, :required => true
-#  config :source_ip_field, :validate => :string, :required => true
-#
-#  # The field containing the IP to be resolved using the map we built
-#  config :dest_ip_field, :validate => :string, :required => true
-#  # The field where the domain name associated with the destination IP will be inserted
-#  config :dest_domain_field, :validate => :string, :required => true
-
-  # Mapping of IPs to Docker service names/domain names
-  attr_accessor :mapping
-
   public
   def register
   end
