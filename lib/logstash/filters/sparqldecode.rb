@@ -17,7 +17,7 @@ class LogStash::Filters::SparqlDecode < LogStash::Filters::Base
       response_content_types = event.get("[http][response][headers][content-type]")
       request_content_types = event.get("[http][request][headers][content-type]")
       if response_content_types == "application/sparql-results+json"
-        # A SPARQL query was sent, let's enrich it'
+        # A SPARQL query was sent, let's enrich it
         if request_content_types == "application/sparql-query"
           # POST with content-type sparql-update, get body
           event.set("[http][request][sparql]", event.get("[http][request][body]"))
