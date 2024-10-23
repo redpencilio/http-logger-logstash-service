@@ -33,6 +33,7 @@ class LogStash::Filters::SparqlDecode < LogStash::Filters::Base
         event.set("[http][request][sparql]", event.get("[http][request][body]"))
       elsif event.get("[url][query]")
         query_map = CGI::parse(event.get("[url][query]"))
+        query_map.default = nil
         query = query_map["query"] || query_map["update"]
         event.set("[http][request][sparql]", query) if query
       end
