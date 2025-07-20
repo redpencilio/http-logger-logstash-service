@@ -21,6 +21,9 @@ class LogStash::Filters::SparqlDecode < LogStash::Filters::Base
         if request_content_types == "application/sparql-query"
           # POST with content-type sparql-update, get body
           event.set("[http][request][sparql]", event.get("[http][request][body]"))
+        elsif request_content_types == "application/sparql-update"
+          # POST with content-type sparql-update, get body
+          event.set("[http][request][sparql]", event.get("[http][request][body]"))
         elsif event.get("[url][query]")
           query_map = CGI::parse(event.get("[url][query]"))
           query_map.default = nil
