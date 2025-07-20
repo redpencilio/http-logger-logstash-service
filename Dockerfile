@@ -17,4 +17,6 @@ FROM docker.elastic.co/logstash/logstash-oss:7.9.0
 
 COPY --from=build-gem /build/ipmap.gem /ipmap.gem
 
+USER root
 RUN /usr/share/logstash/bin/logstash-plugin install /ipmap.gem
+USER logstash
