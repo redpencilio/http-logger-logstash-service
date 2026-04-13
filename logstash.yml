@@ -1,0 +1,3 @@
+allow_superuser: true
+path.config: "/pipeline"
+path.data: "/data"
