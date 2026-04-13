@@ -13,7 +13,7 @@ COPY lib /build/lib
 RUN gem build logstash-service-ip-map-plugin.gemspec -o ipmap.gem
 
 # Stage 1: build logstash
-FROM docker.elastic.co/logstash/logstash-oss:7.9.0
+FROM docker.elastic.co/logstash/logstash-oss:9.3.3
 
 COPY --from=build-gem /build/ipmap.gem /ipmap.gem
 
