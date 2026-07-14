@@ -27,38 +27,40 @@ class LogStash::Filters::IpMap < LogStash::Filters::Base
   public
   def filter(event)
     begin
-      my_ip = ""
-      other_ip = ""
+      my_ip = nil
+      other_ip = nil
 
-      case event.get("[network][direction]")
-      when "internal" # Don't do anything with 'internal' (= container to itself) requests
-        filter_matched(event)
-        return
+      if event.get("[source][ip]") && event.get("[source][ip]") == event.get("[destination][ip]")
+        event.set("[fields][peer_service]", event.get("[fields][compose_service]"))
+      else
+        case event.get("[network][direction]")
+        when "outbound" # Outbound means we are the source
+          my_ip = event.get("[source][ip]")
+          other_ip = event.get("[destination][ip]")
 
-      when "outbound" # Outbound means we are the source
-        my_ip = event.get("[source][ip]")
-        other_ip = event.get("[destination][ip]")
+        when "inbound" # Inbound means we are the destination
+          my_ip = event.get("[destination][ip]")
+          other_ip = event.get("[source][ip]")
 
-      when "inbound" # Inbound means we are the destination
-        my_ip = event.get("[destination][ip]")
-        other_ip = event.get("[source][ip]")
-
-      end
-
-      if !@mapping[my_ip]
-        @logger.info("Mapping for #{my_ip} set to #{event.get("[fields][compose_service]")}")
-        @mapping[my_ip] = event.get("[fields][compose_service]")
-      elsif @mapping[my_ip] && mapping[my_ip] != event.get("[fields][compose_service]")
-        @logger.info("Mapping of #{my_ip} changed from #{@mapping[my_ip]} to #{event.get("[fields][compose_service]")}")
-        if ENV['LOG_EVENT_ON_REMAP'] == "true"
-          @logger.info("Event details: #{event.to_json}")
+        else
+          raise "Did not receive network direction for event"
         end
-        @mapping[my_ip] = event.get("[fields][compose_service]")
-      end
 
-      # If we have a @mapping for the peer
-      if @mapping[other_ip]
-        event.set("[fields][peer_service]", @mapping[other_ip])
+        if !@mapping[my_ip]
+          @logger.info("Mapping for #{my_ip} set to #{event.get("[fields][compose_service]")}")
+          @mapping[my_ip] = event.get("[fields][compose_service]")
+        elsif @mapping[my_ip] && mapping[my_ip] != event.get("[fields][compose_service]")
+          @logger.info("Mapping of #{my_ip} changed from #{@mapping[my_ip]} to #{event.get("[fields][compose_service]")}")
+          if ENV['LOG_EVENT_ON_REMAP'] == "true"
+            @logger.info("Event details: #{event.to_json}")
+          end
+          @mapping[my_ip] = event.get("[fields][compose_service]")
+        end
+
+        # If we have a @mapping for the peer
+        if @mapping[other_ip]
+          event.set("[fields][peer_service]", @mapping[other_ip])
+        end
       end
     rescue
       puts "Failed to set source and target for #{event}"
