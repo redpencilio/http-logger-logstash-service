@@ -50,6 +50,9 @@ class LogStash::Filters::IpMap < LogStash::Filters::Base
         @mapping[my_ip] = event.get("[fields][compose_service]")
       elsif @mapping[my_ip] && mapping[my_ip] != event.get("[fields][compose_service]")
         @logger.info("Mapping of #{my_ip} changed from #{@mapping[my_ip]} to #{event.get("[fields][compose_service]")}")
+        if ENV['LOG_EVENT_ON_REMAP'] == "true"
+          @logger.info("Event details: #{event.to_json}")
+        end
         @mapping[my_ip] = event.get("[fields][compose_service]")
       end
 
