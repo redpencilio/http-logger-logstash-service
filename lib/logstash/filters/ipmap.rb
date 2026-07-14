@@ -63,7 +63,7 @@ class LogStash::Filters::IpMap < LogStash::Filters::Base
         end
       end
     rescue
-      puts "Failed to set source and target for #{event}"
+      puts "Failed to set source and target for #{event.to_json}"
     end
 
     filter_matched(event)
