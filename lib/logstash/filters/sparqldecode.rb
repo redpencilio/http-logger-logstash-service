@@ -33,8 +33,8 @@ class LogStash::Filters::SparqlDecode < LogStash::Filters::Base
           end
         end
       end
-    rescue
-      @logger.warn("Failed to process SPARQL query for #{event}")
+    rescue => e
+      @logger.warn("Failed to process SPARQL query", :event => event.to_hash, :exception => e.message, :backtrace => e.backtrace)
     end
 
     filter_matched(event)
