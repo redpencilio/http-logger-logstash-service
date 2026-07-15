@@ -16,8 +16,7 @@ RUN gem build logstash-service-ip-map-plugin.gemspec -o ipmap.gem
 FROM docker.elastic.co/logstash/logstash-oss:9.4.3
 
 COPY --from=build-gem /build/ipmap.gem /ipmap.gem
+COPY logstash.yml /usr/share/logstash/config/logstash.yml
 
 USER root
 RUN /usr/share/logstash/bin/logstash-plugin install /ipmap.gem
-RUN chown -R logstash:logstash /usr/share/logstash
-USER logstash
