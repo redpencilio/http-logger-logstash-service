@@ -1,6 +1,7 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
+require "concurrent"
 
 class LogStash::Filters::IpMap < LogStash::Filters::Base
 
@@ -21,7 +22,7 @@ class LogStash::Filters::IpMap < LogStash::Filters::Base
 
   public
   def register
-    @mapping = Hash.new
+    @mapping = Concurrent::Map.new
   end
 
   public
